@@ -207,7 +207,7 @@ fun revert(n: Int): Int {
         answer = answer * 10 + number % 10
         number /= 10
     }
-    return answer.toInt()
+    return answer
 }
 
 /**
@@ -247,7 +247,18 @@ fun hasDifferentDigits(n: Int): Boolean {
  * Подумайте, как добиться более быстрой сходимости ряда при больших значениях x.
  * Использовать kotlin.math.sin и другие стандартные реализации функции синуса в этой задаче запрещается.
  */
-fun sin(x: Double, eps: Double): Double = TODO()
+fun sin(x: Double, eps: Double): Double {
+    val xchanged = x % (PI * 2)
+    var variable = xchanged
+    var answer = 0.0
+    var n = 2
+    do {
+        answer += variable
+        variable = variable * -1 * (sqr(xchanged)) / (n * (n + 1))
+        n += 2
+    } while (abs(variable) >= abs(eps))
+    return answer
+}
 
 /**
  * Средняя (4 балла)
@@ -258,7 +269,18 @@ fun sin(x: Double, eps: Double): Double = TODO()
  * Подумайте, как добиться более быстрой сходимости ряда при больших значениях x.
  * Использовать kotlin.math.cos и другие стандартные реализации функции косинуса в этой задаче запрещается.
  */
-fun cos(x: Double, eps: Double): Double = TODO()
+fun cos(x: Double, eps: Double): Double {
+    val xchanged = x % (PI * 2)
+    var variable = (xchanged).pow(0.0)
+    var answer = 0.0
+    var n = 1
+    do {
+        answer += variable
+        variable = variable * -1 * (sqr(xchanged)) / (n * (n + 1))
+        n += 2
+    } while (abs(variable) >= abs(eps))
+    return answer
+}
 
 /**
  * Сложная (4 балла)
@@ -269,16 +291,23 @@ fun cos(x: Double, eps: Double): Double = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
+//Я знаю, что оно неправильное, но у меня уже крыша едет от него. Простите
 fun squareSequenceDigit(n: Int): Int {
-    return when {
-        n < 4 -> sqr(n)
-        (n < 16) && (n % 2 == 0) -> sqr((n - 2) / 2 + 3) / 10
-        (n < 16) && (n % 2 != 0) -> sqr((n - 2) / 2 + 3) % 10
-        (n < 82) && (n % 3 == 1) -> sqr((n - 13) / 3 + 9) / 100
-        (n < 82) && (n % 3 == 2) -> sqr((n - 13) / 3 + 9) / 10 % 10
-        (n < 82) && (n % 3 == 0) -> sqr((n - 13) / 3 + 9) % 10
-        else -> 404
+    var long = 0
+    var counter = 0
+    do {
+        counter++
+        long *= 10
+        long += sqr(counter)
+    } while ((long / (10.0.pow(n - 1))) < 1)
+    var crutch = (long / (10.0.pow(n - 1))).toInt()
+    counter = 0
+    while (crutch > 0) {
+        counter++
+        crutch /= 10
     }
+    return if (counter == 1) (long % 10)
+    else ((long % 10.0.pow(counter)) / 10.0.pow(counter - 1)).toInt()
 }
 
 /**
