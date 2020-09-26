@@ -105,15 +105,18 @@ fun timeForHalfWay(
  * и 3, если угроза от обеих ладей.
  * Считать, что ладьи не могут загораживать друг друга
  */
+fun usefirst(x: Int, x1: Int, y: Int, y1: Int) = (x == x1) || (y == y1)
 fun whichRookThreatens(
     kingX: Int, kingY: Int,
     rookX1: Int, rookY1: Int,
     rookX2: Int, rookY2: Int
 ): Int {
-    return if ((kingX != rookX1) && (kingX != rookX2) && (kingY != rookY1) && (kingY != rookY2)) 0
-    else if (((kingX == rookX1) || (kingY == rookY1)) && (kingX != rookX2) && (kingY != rookY2)) 1
-    else if (((kingX == rookX2) || (kingY == rookY2)) && (kingX != rookX1) && (kingY != rookY1)) 2
-    else 3
+    return when {
+        !usefirst(kingX, rookX1, kingX, rookX2) && !usefirst(kingY, rookY1, kingY, rookY2) -> 0
+        usefirst(kingX, rookX1, kingY, rookY1) && !usefirst(kingX, rookX2, kingY, rookY2) -> 1
+        usefirst(kingX, rookX2, kingY, rookY2) && !usefirst(kingX, rookX1, kingY, rookY1) -> 2
+        else -> 3
+    }
 }
 
 /**
@@ -126,15 +129,18 @@ fun whichRookThreatens(
  * и 3, если угроза есть и от ладьи и от слона.
  * Считать, что ладья и слон не могут загораживать друг друга.
  */
+fun usesecond(x: Int, x1: Int, y: Int, y1: Int) = abs(x - x1) != abs(y - y1)
 fun rookOrBishopThreatens(
     kingX: Int, kingY: Int,
     rookX: Int, rookY: Int,
     bishopX: Int, bishopY: Int
 ): Int {
-    return if ((kingX != rookX) && (kingY != rookY) && (abs(kingX - bishopX) != abs(kingY - bishopY))) 0
-    else if (((kingX == rookX) || (kingY == rookY)) && (abs(kingX - bishopX) != abs(kingY - bishopY))) 1
-    else if (((kingX != rookX) && (kingY != rookY)) && (abs(kingX - bishopX) == abs(kingY - bishopY))) 2
-    else 3
+    return when {
+        !usefirst(kingX, rookX, kingY, rookY) && usesecond(kingX, bishopX, kingY, bishopY) -> 0
+        usefirst(kingX, rookX, kingY, rookY) && usesecond(kingX, bishopX, kingY, bishopY) -> 1
+        !usefirst(kingX, rookX, kingY, rookY) && !usesecond(kingX, bishopX, kingY, bishopY) -> 2
+        else -> 3
+    }
 }
 
 /**
@@ -148,9 +154,9 @@ fun rookOrBishopThreatens(
 fun sqr(x: Double) = x * x
 fun triangleKind(a: Double, b: Double, c: Double): Int {
     return when {
-        ((a + b < c) || (a + c < b) || (b + c < a)) -> -1
-        ((sqr(a) + sqr(b) == sqr(c)) || (sqr(a) + sqr(c) == sqr(b)) || (sqr(c) + sqr(b) == sqr(a))) -> 1
-        ((sqr(a) + sqr(b) < sqr(c)) || (sqr(a) + sqr(c) < sqr(b)) || (sqr(c) + sqr(b) < sqr(a))) -> 2
+        (a + b < c) || (a + c < b) || (b + c < a) -> -1
+        (sqr(a) + sqr(b) == sqr(c)) || (sqr(a) + sqr(c) == sqr(b)) || (sqr(c) + sqr(b) == sqr(a)) -> 1
+        (sqr(a) + sqr(b) < sqr(c)) || (sqr(a) + sqr(c) < sqr(b)) || (sqr(c) + sqr(b) < sqr(a)) -> 2
         else -> 0
     }
 }
