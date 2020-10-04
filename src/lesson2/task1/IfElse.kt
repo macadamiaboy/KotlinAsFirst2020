@@ -105,16 +105,16 @@ fun timeForHalfWay(
  * и 3, если угроза от обеих ладей.
  * Считать, что ладьи не могут загораживать друг друга
  */
-fun usefirst(x: Int, x1: Int, y: Int, y1: Int) = (x == x1) || (y == y1)
+fun line(x: Int, x1: Int, y: Int, y1: Int) = (x == x1) || (y == y1)
 fun whichRookThreatens(
     kingX: Int, kingY: Int,
     rookX1: Int, rookY1: Int,
     rookX2: Int, rookY2: Int
 ): Int {
     return when {
-        !usefirst(kingX, rookX1, kingX, rookX2) && !usefirst(kingY, rookY1, kingY, rookY2) -> 0
-        usefirst(kingX, rookX1, kingY, rookY1) && !usefirst(kingX, rookX2, kingY, rookY2) -> 1
-        usefirst(kingX, rookX2, kingY, rookY2) && !usefirst(kingX, rookX1, kingY, rookY1) -> 2
+        !line(kingX, rookX1, kingX, rookX2) && !line(kingY, rookY1, kingY, rookY2) -> 0
+        line(kingX, rookX1, kingY, rookY1) && !line(kingX, rookX2, kingY, rookY2) -> 1
+        line(kingX, rookX2, kingY, rookY2) && !line(kingX, rookX1, kingY, rookY1) -> 2
         else -> 3
     }
 }
@@ -129,16 +129,16 @@ fun whichRookThreatens(
  * и 3, если угроза есть и от ладьи и от слона.
  * Считать, что ладья и слон не могут загораживать друг друга.
  */
-fun usesecond(x: Int, x1: Int, y: Int, y1: Int) = abs(x - x1) != abs(y - y1)
+fun diagonal(x: Int, x1: Int, y: Int, y1: Int) = abs(x - x1) != abs(y - y1)
 fun rookOrBishopThreatens(
     kingX: Int, kingY: Int,
     rookX: Int, rookY: Int,
     bishopX: Int, bishopY: Int
 ): Int {
     return when {
-        !usefirst(kingX, rookX, kingY, rookY) && usesecond(kingX, bishopX, kingY, bishopY) -> 0
-        usefirst(kingX, rookX, kingY, rookY) && usesecond(kingX, bishopX, kingY, bishopY) -> 1
-        !usefirst(kingX, rookX, kingY, rookY) && !usesecond(kingX, bishopX, kingY, bishopY) -> 2
+        !line(kingX, rookX, kingY, rookY) && diagonal(kingX, bishopX, kingY, bishopY) -> 0
+        line(kingX, rookX, kingY, rookY) && diagonal(kingX, bishopX, kingY, bishopY) -> 1
+        !line(kingX, rookX, kingY, rookY) && !diagonal(kingX, bishopX, kingY, bishopY) -> 2
         else -> 3
     }
 }

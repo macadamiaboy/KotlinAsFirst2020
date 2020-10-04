@@ -77,13 +77,11 @@ fun digitCountInNumber(n: Int, m: Int): Int =
 fun digitNumber(n: Int): Int {
     var count = 0
     var number = n
-    return if (number == 0) 1 else {
-        while (number > 0) {
-            count++
-            number /= 10
-        }
-        count
-    }
+    do {
+        count++
+        number /= 10
+    } while (number != 0)
+    return count
 }
 
 /**
@@ -92,7 +90,19 @@ fun digitNumber(n: Int): Int {
  * Найти число Фибоначчи из ряда 1, 1, 2, 3, 5, 8, 13, 21, ... с номером n.
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
-fun fib(n: Int): Int = if (n > 2) (fib(n - 2) + fib(n - 1)) else 1
+fun fib(n: Int): Int {
+    var previous = 1
+    var current = 1
+    var intermediate: Int
+    return if (n < 3) 1
+    else {
+        for (i in 3..n) {
+            intermediate = current
+            current += previous
+            previous = intermediate
+        }; return current
+    }
+}
 
 /**
  * Простая (2 балла)
@@ -153,13 +163,19 @@ fun collatzSteps(x: Int): Int {
  * Для заданных чисел m и n найти наименьшее общее кратное, то есть,
  * минимальное число k, которое делится и на m и на n без остатка
  */
-fun lcm(m: Int, n: Int): Int {
-    var result = max(m, n)
-    while (!((result % m == 0) && (result % n == 0))) {
-        result++
+fun gcd(m: Int, n: Int): Int {
+    var reminder = max(m, n) % min(m, n)
+    var divider = min(m, n)
+    var intermediate: Int
+    while (reminder != 0) {
+        intermediate = reminder
+        reminder = divider % reminder
+        divider = intermediate
     }
-    return result
+    return divider
 }
+
+fun lcm(m: Int, n: Int): Int = m * n / gcd(m, n)
 
 /**
  * Средняя (3 балла)
@@ -168,14 +184,7 @@ fun lcm(m: Int, n: Int): Int {
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean {
-    for (k in 2..min(m, n)) {
-        if ((m % k == 0) && (n % k == 0)) {
-            return false
-        }
-    }
-    return true
-}
+fun isCoPrime(m: Int, n: Int): Boolean = gcd(m, n) == 1
 
 /**
  * Средняя (3 балла)
