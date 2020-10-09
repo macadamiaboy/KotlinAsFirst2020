@@ -300,24 +300,7 @@ fun cos(x: Double, eps: Double): Double {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-//Я знаю, что оно неправильное, но у меня уже крыша едет от него. Простите
-fun squareSequenceDigit(n: Int): Int {
-    var long = 0
-    var counter = 0
-    do {
-        counter++
-        long *= 10
-        long += sqr(counter)
-    } while ((long / (10.0.pow(n - 1))) < 1)
-    var crutch = (long / (10.0.pow(n - 1))).toInt()
-    counter = 0
-    while (crutch > 0) {
-        counter++
-        crutch /= 10
-    }
-    return if (counter == 1) (long % 10)
-    else ((long % 10.0.pow(counter)) / 10.0.pow(counter - 1)).toInt()
-}
+fun squareSequenceDigit(n: Int): Int = TODO()
 
 /**
  * Сложная (5 баллов)
