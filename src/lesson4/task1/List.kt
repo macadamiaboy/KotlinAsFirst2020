@@ -334,7 +334,7 @@ fun decimalFromString(str: String, base: Int): Int {
         if (str[i] in alphabet) {
             list.add(10 + alphabet.indexOf(str[i]))
         } else {
-            list.add(str[i].toInt() - 48)
+            list.add(str[i].toString().toInt())
         }
     }
     for (i in 0 until list.size) {
