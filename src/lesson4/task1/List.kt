@@ -270,7 +270,7 @@ fun convert(n: Int, base: Int): List<Int> {
         result.add(0, variable % base)
         variable /= base
     }
-    result.add(0, variable)
+    if (variable > 0) result.add(0, variable)
     return result
 }
 
@@ -296,7 +296,7 @@ fun convertToString(n: Int, base: Int): String {
         result.add(0, notation(member, alphabet))
         variable /= base
     }
-    result.add(0, notation(variable, alphabet))
+    if (variable > 0) result.add(0, notation(variable, alphabet))
     return result.joinToString(separator = "")
 }
 
