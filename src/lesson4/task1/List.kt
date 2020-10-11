@@ -270,7 +270,7 @@ fun convert(n: Int, base: Int): List<Int> {
         result.add(0, variable % base)
         variable /= base
     }
-    if (variable > 0) result.add(0, variable)
+    result.add(0, variable)
     return result
 }
 
@@ -296,7 +296,7 @@ fun convertToString(n: Int, base: Int): String {
         result.add(0, notation(member, alphabet))
         variable /= base
     }
-    if (variable > 0) result.add(0, notation(variable, alphabet))
+    result.add(0, notation(variable, alphabet))
     return result.joinToString(separator = "")
 }
 
@@ -334,7 +334,7 @@ fun decimalFromString(str: String, base: Int): Int {
         if (str[i] in alphabet) {
             list.add(10 + alphabet.indexOf(str[i]))
         } else {
-            list.add(str[i].toInt() - 48) //Я не знаю, почему, но он выдает число на 48 больше)))
+            list.add(str[i].toInt() - 48)
         }
     }
     for (i in 0 until list.size) {
