@@ -266,7 +266,7 @@ fun factorizeToString(n: Int): String = factorize(n).joinToString(separator = "*
 fun convert(n: Int, base: Int): List<Int> {
     var variable = n
     val result = mutableListOf<Int>()
-    while (variable > base) {
+    while (variable >= base) {
         result.add(0, variable % base)
         variable /= base
     }
@@ -291,7 +291,7 @@ fun convertToString(n: Int, base: Int): String {
     var member: Int
     val alphabet = "abcdefghijklmnopqrstuvwxyz"
     val result = mutableListOf<String>()
-    while (variable > base) {
+    while (variable >= base) {
         member = variable % base
         result.add(0, notation(member, alphabet))
         variable /= base
