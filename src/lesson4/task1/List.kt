@@ -126,7 +126,8 @@ fun abs(v: List<Double>): Double {
     var counter = 0.0
     for (element in v) {
         counter += sqr(element)
-    }; return sqrt(counter)
+    }
+    return sqrt(counter)
 }
 
 /**
@@ -140,7 +141,8 @@ fun mean(list: List<Double>): Double {
     return if (condition == 0.0) 0.0 else {
         for (element in list) {
             counter += element
-        }; (counter / condition)
+        }
+        (counter / condition)
     }
 }
 
@@ -163,7 +165,8 @@ fun center(list: MutableList<Double>): MutableList<Double> {
         for (i in 0 until list.size) {
             list[i] -= counter
         }
-    }; return list
+    }
+    return list
 }
 
 /**
@@ -198,7 +201,8 @@ fun polynom(p: List<Int>, x: Int): Int {
         var counter = 0
         for (i in p.indices) {
             counter += p[i] * (x.toDouble()).pow(i).toInt()
-        }; return counter
+        }
+        return counter
     }
 }
 
@@ -222,7 +226,8 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> {
                 list[i] = counter
             }
         }
-    }; return list
+    }
+    return list
 }
 
 /**
@@ -243,7 +248,8 @@ fun factorize(n: Int): List<Int> {
                 break
             }
         }
-    }; return result
+    }
+    return result
 }
 
 /**
@@ -311,7 +317,8 @@ fun decimal(digits: List<Int>, base: Int): Int {
     var result = 0
     for ((counter, i) in (digits.size - 1 downTo 0).withIndex()) {
         result += digits[i] * base.toDouble().pow(counter).toInt()
-    }; return result
+    }
+    return result
 }
 
 /**
@@ -339,7 +346,8 @@ fun decimalFromString(str: String, base: Int): Int {
     }
     for (i in 0 until list.size) {
         result += list[i] * base.toDouble().pow(i).toInt()
-    }; return result
+    }
+    return result
 }
 
 /**
@@ -362,53 +370,21 @@ fun roman(n: Int): String = TODO()
 fun hundreds(n: Int): MutableList<String> {
     val pronunciation = mutableListOf<String>()
     val number = n % 1000
+    val names = listOf(
+        "один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять",
+        "одиннадцать", "двенадцать", "тринадцать", "четырнадцать", "пятнадцать", "шестнадцать", "семнадцать",
+        "восемнадцать", "девятнадцать", "десять", "двадцать", "тридцать", "сорок", "пятьдесят", "шестьдесят",
+        "семьдесят", "восемьдесят", "девяносто", "сто", "двести", "триста", "четыреста", "пятьсот", "шестьсот",
+        "семьсот", "восемьсот", "девятьсот"
+    )
     if (number % 100 in 11..19) {
-        when (number % 100) {
-            11 -> pronunciation.add(0, "одиннадцать")
-            12 -> pronunciation.add(0, "двенадцать")
-            13 -> pronunciation.add(0, "тринадцать")
-            14 -> pronunciation.add(0, "четырнадцать")
-            15 -> pronunciation.add(0, "пятнадцать")
-            16 -> pronunciation.add(0, "шестнадцать")
-            17 -> pronunciation.add(0, "семнадцать")
-            18 -> pronunciation.add(0, "восемнадцать")
-            19 -> pronunciation.add(0, "девятнадцать")
-        }
+        pronunciation.add(0, names[number % 100 - 2])
     } else {
-        when (number % 10) {
-            1 -> pronunciation.add(0, "один")
-            2 -> pronunciation.add(0, "два")
-            3 -> pronunciation.add(0, "три")
-            4 -> pronunciation.add(0, "четыре")
-            5 -> pronunciation.add(0, "пять")
-            6 -> pronunciation.add(0, "шесть")
-            7 -> pronunciation.add(0, "семь")
-            8 -> pronunciation.add(0, "восемь")
-            9 -> pronunciation.add(0, "девять")
-        }
-        when (number % 100 / 10) {
-            1 -> pronunciation.add(0, "десять")
-            2 -> pronunciation.add(0, "двадцать")
-            3 -> pronunciation.add(0, "тридцать")
-            4 -> pronunciation.add(0, "сорок")
-            5 -> pronunciation.add(0, "пятьдесят")
-            6 -> pronunciation.add(0, "шестьдесят")
-            7 -> pronunciation.add(0, "семьдесят")
-            8 -> pronunciation.add(0, "восемьдесят")
-            9 -> pronunciation.add(0, "девяносто")
-        }
+        pronunciation.add(0, names[number % 10 - 1])
+        pronunciation.add(0, names[number % 100 / 10 + 17])
     }
-    when (number / 100) {
-        1 -> pronunciation.add(0, "сто")
-        2 -> pronunciation.add(0, "двести")
-        3 -> pronunciation.add(0, "триста")
-        4 -> pronunciation.add(0, "четыреста")
-        5 -> pronunciation.add(0, "пятьсот")
-        6 -> pronunciation.add(0, "шестьсот")
-        7 -> pronunciation.add(0, "семьсот")
-        8 -> pronunciation.add(0, "восемьсот")
-        9 -> pronunciation.add(0, "девятьсот")
-    }; return pronunciation
+    pronunciation.add(0, names[number / 100 + 26])
+    return pronunciation
 }
 fun russian(n: Int): String {
     val result: MutableList<String> = hundreds(n / 1000)
