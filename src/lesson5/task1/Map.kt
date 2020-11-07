@@ -394,6 +394,7 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
  *   ) -> emptySet()
  */
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
+    if (treasures.isEmpty()) return emptySet()
     val minWeight = treasures.minOf { it.value.first }
     val table: Array<Array<Int>> = Array(treasures.size + 1) { Array(capacity + 1) { 0 } }
     val items: Array<Array<Set<String>>> = Array(treasures.size + 1) { Array(capacity + 1) { emptySet() } }
