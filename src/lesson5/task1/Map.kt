@@ -149,7 +149,13 @@ fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>) {
  * В выходном списке не должно быть повторяюихся элементов,
  * т. е. whoAreInBoth(listOf("Марат", "Семён, "Марат"), listOf("Марат", "Марат")) == listOf("Марат")
  */
-fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.filter { it in b }
+fun whoAreInBoth(a: List<String>, b: List<String>): List<String> {
+    val set = mutableSetOf<String>()
+    for (element in a) {
+        if (element in b) set.add(element)
+    }
+    return set.toList()
+}
 
 /**
  * Средняя (3 балла)
@@ -214,9 +220,9 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  */
 fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
     var result: String? = null
-    var price = -1.0
+    var price: Double? = null
     for ((name, pair) in stuff) {
-        if (pair.first == kind && (price < 0 || price > pair.second)) {
+        if (pair.first == kind && (price != null && price > pair.second || price == null)) {
             result = name
             price = pair.second
         }
@@ -235,8 +241,8 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean {
     val set = chars.toSet()
-    for (letter in word.toLowerCase()) {
-        if (letter !in set) return false
+    for (letter in word) {
+        if (letter.toLowerCase() !in set && letter.toUpperCase() !in set) return false
     }
     return true
 }
