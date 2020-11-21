@@ -242,7 +242,7 @@ fun mostExpensive(description: String): String {
     val map = mutableMapOf<Double, String>()
     for (element in product) {
         val pair = element.split(" ")
-        if (pair.size == 1 || pair[1].toDouble() <= 0.0) return ""
+        if (pair.size == 1 || pair[1].toDouble() < 0.0) return ""
         val a = pair[1].toDoubleOrNull()
         if (a == null) return "" else map[a] = pair[0]
     }
