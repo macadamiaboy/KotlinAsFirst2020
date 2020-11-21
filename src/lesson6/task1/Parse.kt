@@ -80,64 +80,27 @@ fun main() {
  */
 fun dateStrToDigit(str: String): String {
     val parts = str.split(" ").toMutableList()
-    try {
-        if (parts.size != 3) return String()
-        if (parts[2].toInt() < 0) return String()
-        parts[0] = twoDigitStr(parts[0].toInt())
-        when (parts[1]) {
-            "января" -> {
-                parts[1] = "01"
-                if (parts[0].toInt() > 31 || parts[0].toInt() < 1) return String()
-            }
-            "февраля" -> {
-                parts[1] = "02"
-                if (parts[0].toInt() > daysInMonth(2, parts[2].toInt()) || parts[0].toInt() < 1) return String()
-            }
-            "марта" -> {
-                parts[1] = "03"
-                if (parts[0].toInt() > 31 || parts[0].toInt() < 1) return String()
-            }
-            "апреля" -> {
-                parts[1] = "04"
-                if (parts[0].toInt() > 30 || parts[0].toInt() < 1) return String()
-            }
-            "мая" -> {
-                parts[1] = "05"
-                if (parts[0].toInt() > 31 || parts[0].toInt() < 1) return String()
-            }
-            "июня" -> {
-                parts[1] = "06"
-                if (parts[0].toInt() > 30 || parts[0].toInt() < 1) return String()
-            }
-            "июля" -> {
-                parts[1] = "07"
-                if (parts[0].toInt() > 31 || parts[0].toInt() < 1) return String()
-            }
-            "августа" -> {
-                parts[1] = "08"
-                if (parts[0].toInt() > 31 || parts[0].toInt() < 1) return String()
-            }
-            "сентября" -> {
-                parts[1] = "09"
-                if (parts[0].toInt() > 30 || parts[0].toInt() < 1) return String()
-            }
-            "октября" -> {
-                parts[1] = "10"
-                if (parts[0].toInt() > 31 || parts[0].toInt() < 1) return String()
-            }
-            "ноября" -> {
-                parts[1] = "11"
-                if (parts[0].toInt() > 30 || parts[0].toInt() < 1) return String()
-            }
-            "декабря" -> {
-                parts[1] = "12"
-                if (parts[0].toInt() > 31 || parts[0].toInt() < 1) return String()
-            }
-            else -> return String()
-        }
-    } catch (e: NumberFormatException) {
-        return String()
-    }
+    val months = mapOf(
+        "января" to "01",
+        "февраля" to "02",
+        "марта" to "03",
+        "апреля" to "04",
+        "мая" to "05",
+        "июня" to "06",
+        "июля" to "07",
+        "августа" to "08",
+        "сентября" to "09",
+        "октября" to "10",
+        "ноября" to "11",
+        "декабря" to "12"
+    )
+    if (parts.size != 3) return ""
+    parts[1] = months.getOrElse(parts[1]) { return "" }
+    val year = parts[2].toIntOrNull()
+    if (year == null || year < 0) return ""
+    val day = parts[0].toIntOrNull()
+    if (day == null || day < 1 || day > daysInMonth(parts[1].toInt(), year)) return ""
+    else parts[0] = twoDigitStr(parts[0].toInt())
     return parts.joinToString(separator = ".")
 }
 
@@ -181,15 +144,12 @@ fun flattenPhoneNumber(phone: String): String = TODO()
  */
 fun bestLongJump(jumps: String): Int {
     val results = jumps.split(" ")
-    val numbers = mutableListOf<Int>()
-    return try {
-        for (element in results) {
-            if (element != "-" && element != "%") numbers.add(element.toInt())
-        }
-        if (numbers.isEmpty()) -1 else numbers.maxByOrNull { it }!!
-    } catch (e: NumberFormatException) {
-        -1
+    val numbers = mutableListOf<Int?>()
+    for (element in results) {
+        if (element != "-" && element != "%")
+            if ("-" in element && "+" in element) return -1 else numbers.add(element.toIntOrNull())
     }
+    return if (numbers.isEmpty() || null in numbers) -1 else numbers.maxByOrNull { it!! }!!
 }
 
 /**
@@ -205,16 +165,13 @@ fun bestLongJump(jumps: String): Int {
  */
 fun bestHighJump(jumps: String): Int {
     val results = jumps.split(" ")
-    val numbers = mutableListOf<Int>()
-    return try {
-        if (results.size < 2) return -1
-        for (i in results.indices) {
-            if (i % 2 == 0 && "+" in results[i + 1]) numbers.add(results[i].toInt())
-        }
-        if (numbers.isEmpty()) -1 else numbers.maxByOrNull { it }!!
-    } catch (e: NumberFormatException) {
-        -1
+    val numbers = mutableListOf<Int?>()
+    if (results.size < 2) return -1
+    for (i in results.indices) {
+        if (i % 2 == 0 && "+" in results[i + 1])
+            if ("-" in results[i] && "+" in results[i]) return -1 else numbers.add(results[i].toIntOrNull())
     }
+    return if (numbers.isEmpty() || null in numbers) -1 else numbers.maxByOrNull { it!! }!!
 }
 
 /**
@@ -230,15 +187,18 @@ fun plusMinus(expression: String): Int {
     val parts = expression.split(" ")
     var result = 0
     try {
-        for (i in parts.indices) {
-            if (i % 2 == 0 && ("-" in parts[i] || "+" in parts[i])) throw IllegalArgumentException()
-            if (i == 0) result = parts[i].toInt()
-            else if (i % 2 == 0 && parts[i - 1] == "-") result -= parts[i].toInt()
-            else if (i % 2 == 0 && parts[i - 1] == "+") result += parts[i].toInt()
+        for (i in parts.indices step 2) {
+            if ("-" in parts[i] || "+" in parts[i])
+                throw IllegalArgumentException("Во входных данных ошибка")
+            when {
+                i == 0 -> result = parts[i].toInt()
+                parts[i - 1] == "-" -> result -= parts[i].toInt()
+                parts[i - 1] == "+" -> result += parts[i].toInt()
+            }
         }
         return result
     } catch (e: NumberFormatException) {
-        throw IllegalArgumentException()
+        throw IllegalArgumentException("Во входных данных ошибка")
     }
 }
 
@@ -253,9 +213,9 @@ fun plusMinus(expression: String): Int {
  */
 fun firstDuplicateIndex(str: String): Int {
     val words = str.split(" ")
+    if (words.size < 2) return -1
     var variable = words[0].toLowerCase()
     var result = 0
-    if (words.size < 2) return -1
     for (i in 1 until words.size) {
         if (variable != words[i].toLowerCase()) {
             result += variable.length + 1
@@ -277,18 +237,16 @@ fun firstDuplicateIndex(str: String): Int {
  * Все цены должны быть больше нуля либо равны нулю.
  */
 fun mostExpensive(description: String): String {
-    if (description.isEmpty()) return String()
+    if (description.isEmpty()) return ""
     val product = description.split("; ")
     val map = mutableMapOf<Double, String>()
-    return try {
-        for (element in product) {
-            val pair = element.split(" ")
-            map[pair[1].toDouble()] = pair[0]
-        }
-        map[map.maxOf { it.key }]!!
-    } catch (e: NumberFormatException) {
-        String()
+    for (element in product) {
+        val pair = element.split(" ")
+        if (pair.size == 1 || pair[1].toDouble() <= 0.0) return ""
+        val a = pair[1].toDoubleOrNull()
+        if (a == null) return "" else map[a] = pair[0]
     }
+    return map[map.maxOf { it.key }]!!
 }
 
 /**
