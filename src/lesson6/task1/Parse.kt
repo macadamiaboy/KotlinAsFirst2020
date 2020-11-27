@@ -2,7 +2,6 @@
 
 package lesson6.task1
 
-import java.lang.NumberFormatException
 import lesson2.task2.daysInMonth
 import java.lang.IllegalArgumentException
 
@@ -100,7 +99,7 @@ fun dateStrToDigit(str: String): String {
     if (year == null || year < 0) return ""
     val day = parts[0].toIntOrNull()
     if (day == null || day < 1 || day > daysInMonth(parts[1].toInt(), year)) return ""
-    else parts[0] = twoDigitStr(parts[0].toInt())
+    else parts[0] = twoDigitStr(day)
     return parts.joinToString(separator = ".")
 }
 
@@ -147,7 +146,7 @@ fun bestLongJump(jumps: String): Int {
     val numbers = mutableListOf<Int?>()
     for (element in results) {
         if (element != "-" && element != "%")
-            if ("-" in element && "+" in element) return -1 else numbers.add(element.toIntOrNull())
+            if ("-" in element || "+" in element) return -1 else numbers.add(element.toIntOrNull())
     }
     return if (numbers.isEmpty() || null in numbers) -1 else numbers.maxByOrNull { it!! }!!
 }
@@ -166,10 +165,10 @@ fun bestLongJump(jumps: String): Int {
 fun bestHighJump(jumps: String): Int {
     val results = jumps.split(" ")
     val numbers = mutableListOf<Int?>()
-    if (results.size < 2) return -1
+    if (results.size < 2 || results.size % 2 != 0) return -1
     for (i in results.indices) {
         if (i % 2 == 0 && "+" in results[i + 1])
-            if ("-" in results[i] && "+" in results[i]) return -1 else numbers.add(results[i].toIntOrNull())
+            if ("-" in results[i] || "+" in results[i]) return -1 else numbers.add(results[i].toIntOrNull())
     }
     return if (numbers.isEmpty() || null in numbers) -1 else numbers.maxByOrNull { it!! }!!
 }
@@ -186,20 +185,17 @@ fun bestHighJump(jumps: String): Int {
 fun plusMinus(expression: String): Int {
     val parts = expression.split(" ")
     var result = 0
-    try {
-        for (i in parts.indices step 2) {
-            if ("-" in parts[i] || "+" in parts[i])
-                throw IllegalArgumentException("Во входных данных ошибка")
-            when {
-                i == 0 -> result = parts[i].toInt()
-                parts[i - 1] == "-" -> result -= parts[i].toInt()
-                parts[i - 1] == "+" -> result += parts[i].toInt()
-            }
+    for (i in parts.indices step 2) {
+        if ("-" in parts[i] || "+" in parts[i])
+            throw IllegalArgumentException("Во входных данных ошибка")
+        val intermediate = parts[i].toIntOrNull() ?: throw IllegalArgumentException("Во входных данных ошибка")
+        when {
+            i == 0 -> result = intermediate
+            parts[i - 1] == "-" -> result -= intermediate
+            parts[i - 1] == "+" -> result += intermediate
         }
-        return result
-    } catch (e: NumberFormatException) {
-        throw IllegalArgumentException("Во входных данных ошибка")
     }
+    return result
 }
 
 /**
@@ -242,7 +238,8 @@ fun mostExpensive(description: String): String {
     val map = mutableMapOf<Double, String>()
     for (element in product) {
         val pair = element.split(" ")
-        if (pair.size == 1 || pair[1].toDouble() < 0.0) return ""
+        val intermediate = pair[1].toDoubleOrNull() ?: return ""
+        if (pair.size != 2 || intermediate < 0.0) return ""
         val a = pair[1].toDoubleOrNull()
         if (a == null) return "" else map[a] = pair[0]
     }
