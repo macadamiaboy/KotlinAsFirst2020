@@ -162,11 +162,19 @@ fun bestLongJump(jumps: String): Int {
  * При нарушении формата входной строки, а также в случае отсутствия удачных попыток,
  * вернуть -1.
  */
+fun content(string: String): Boolean {
+    for (i in string.indices) {
+        if (!(string[i] == '-' || string[i] == '%' || string[i] == '+')) return false
+    }
+    return true
+}
+
 fun bestHighJump(jumps: String): Int {
     val results = jumps.split(" ")
     val numbers = mutableListOf<Int?>()
     if (results.size < 2 || results.size % 2 != 0) return -1
     for (i in results.indices) {
+        if (i % 2 == 1 && !content(results[i])) return -1
         if (i % 2 == 0 && "+" in results[i + 1])
             if ("-" in results[i] || "+" in results[i]) return -1 else numbers.add(results[i].toIntOrNull())
     }
@@ -238,10 +246,11 @@ fun mostExpensive(description: String): String {
     val map = mutableMapOf<Double, String>()
     for (element in product) {
         val pair = element.split(" ")
+        if (pair.size != 2) return ""
         val intermediate = pair[1].toDoubleOrNull() ?: return ""
-        if (pair.size != 2 || intermediate < 0.0) return ""
-        val a = pair[1].toDoubleOrNull()
-        if (a == null) return "" else map[a] = pair[0]
+        if (intermediate < 0.0) return ""
+        val a = pair[1].toDoubleOrNull() ?: return ""
+        map[a] = pair[0]
     }
     return map[map.maxOf { it.key }]!!
 }

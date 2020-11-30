@@ -83,6 +83,7 @@ class Tests {
     @Tag("6")
     fun bestHighJump() {
         assertEquals(226, bestHighJump("226 +"))
+        assertEquals(-1, bestHighJump("226 + 283 #+- 177 -/"))
         assertEquals(-1, bestHighJump("???"))
         assertEquals(-1, bestHighJump("10 + 11 + 12"))
         assertEquals(-1, bestHighJump("155 -+ 268 % -283 +"))
