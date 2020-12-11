@@ -299,7 +299,61 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+    writer.write("<html>")
+    writer.newLine()
+    writer.write("<body>")
+    writer.newLine()
+    writer.write("<p>")
+    writer.newLine()
+    for (line in File(inputName).readLines()) {
+        var variableLine = line
+        if (line.isEmpty()) {
+            writer.write("</p>")
+            writer.newLine()
+            writer.write("<p>")
+            writer.newLine()
+        }
+        while ("**" in variableLine) {
+            val firstSymbolIndex = Regex("""\*\*""").find(variableLine)!!.range.first
+            val secondSymbolIndex =
+                firstSymbolIndex + 2 + Regex("""\*\*""").find(variableLine.substring(firstSymbolIndex + 2))!!.range.first
+            variableLine =
+                variableLine.substring(0, firstSymbolIndex) + "<b>" + variableLine.substring(
+                    firstSymbolIndex + 2,
+                    secondSymbolIndex
+                ) + "</b>" + variableLine.substring(secondSymbolIndex + 2)
+        }
+        while ("~~" in variableLine) {
+            val firstSymbolIndex = Regex("""~~""").find(variableLine)!!.range.first
+            val secondSymbolIndex =
+                firstSymbolIndex + 2 + Regex("""~~""").find(variableLine.substring(firstSymbolIndex + 2))!!.range.first
+            variableLine =
+                variableLine.substring(0, firstSymbolIndex) + "<s>" + variableLine.substring(
+                    firstSymbolIndex + 2,
+                    secondSymbolIndex
+                ) + "</s>" + variableLine.substring(secondSymbolIndex + 2)
+        }
+        while ("*" in variableLine) {
+            val firstSymbolIndex = Regex("""\*""").find(variableLine)!!.range.first
+            val secondSymbolIndex =
+                firstSymbolIndex + 1 + Regex("""\*""").find(variableLine.substring(firstSymbolIndex + 1))!!.range.first
+            variableLine =
+                variableLine.substring(0, firstSymbolIndex) + "<i>" + variableLine.substring(
+                    firstSymbolIndex + 1,
+                    secondSymbolIndex
+                ) + "</i>" + variableLine.substring(secondSymbolIndex + 1)
+        }
+        writer.write(variableLine)
+        writer.newLine()
+    }
+    writer.write("</p>")
+    writer.newLine()
+    writer.write("</body>")
+    writer.newLine()
+    writer.write("</html>")
+    writer.newLine()
+    writer.close()
 }
 
 /**
