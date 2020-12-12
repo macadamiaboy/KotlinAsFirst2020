@@ -541,7 +541,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         writer.write(" $lhv | $rhv")
         writer.newLine()
         var intermediate = lhv
-        while (intermediate / 10 > rhv) {
+        while (intermediate / 10 >= rhv) {
             intermediate /= 10
         }
         intermediate = intermediate / rhv * rhv
