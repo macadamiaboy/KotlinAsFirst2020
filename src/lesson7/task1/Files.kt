@@ -529,7 +529,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         writer.newLine()
         writer.write(multiplication("-", lhv.toString().length))
         writer.newLine()
-        writer.write(multiplication(" ", lhv.toString().length - 1) + lhv.toString())
+        writer.write(lhv.toString())
     } else {
         var number = lhv
         while (number > 0) {
