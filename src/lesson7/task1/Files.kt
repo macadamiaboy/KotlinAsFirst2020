@@ -522,14 +522,20 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     val writer = File(outputName).bufferedWriter()
     val list = mutableListOf<Int>()
-    if (rhv > lhv && lhv / 10 > 0) {
+    if (lhv / rhv / 10 == 0 && lhv / 10 > 0) {
         writer.write("$lhv | $rhv")
         writer.newLine()
-        writer.write(multiplication(" ", lhv.toString().length - 2) + "-0   0")
+        val integer = lhv / rhv
+        writer.write(
+            multiplication(
+                " ",
+                lhv.toString().length - integer * rhv.toString().length
+            ) + "-" + integer * rhv + "   " + integer
+        )
         writer.newLine()
         writer.write(multiplication("-", lhv.toString().length))
         writer.newLine()
-        writer.write(lhv.toString())
+        writer.write((lhv - integer).toString())
     } else {
         var number = lhv
         while (number > 0) {
