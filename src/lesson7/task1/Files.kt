@@ -572,7 +572,10 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
             spaces = multiplication(" ", counter - 1 - intermediate.toString().length)
             writer.write("$spaces-$intermediate")
             writer.newLine()
-            writer.write(spaces + multiplication("-", counter - spaces.length))
+            val secondarySpaces = multiplication(" ", counter - minuend.toString().length)
+            if (minuend.toString().length > 1 + intermediate.toString().length)
+                writer.write(secondarySpaces + multiplication("-", counter - secondarySpaces.length))
+            else writer.write(spaces + multiplication("-", counter - spaces.length))
             writer.newLine()
         }
         writer.write(
