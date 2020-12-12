@@ -522,54 +522,64 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     val writer = File(outputName).bufferedWriter()
     val list = mutableListOf<Int>()
-    var number = lhv
-    while (number > 0) {
-        list.add(0, number % 10)
-        number /= 10
-    }
-    var counter: Int
-    var spaces = ""
-    writer.write(" $lhv | $rhv")
-    writer.newLine()
-    var intermediate = lhv
-    while (intermediate / 10 > rhv) {
-        intermediate /= 10
-    }
-    intermediate = intermediate / rhv * rhv
-    writer.write("-$intermediate")
-    val resultSpace = lhv.toString().length - intermediate.toString().length + 3
-    writer.write(multiplication(" ", resultSpace) + (lhv / rhv).toString())
-    writer.newLine()
-    counter = intermediate.toString().length + 1
-    writer.write(multiplication("-", counter - spaces.length))
-    writer.newLine()
-    var minuend = list.subList(0, intermediate.toString().length).joinToString(separator = "").toInt()
-    while (counter < list.size + 1) {
-        if (minuend == intermediate) {
-            writer.write(
-                multiplication(" ", counter - (minuend - intermediate).toString().length)
-                        + "0" + list[counter - 1]
-            )
-        } else {
-            writer.write(
-                multiplication(" ", counter - (minuend - intermediate).toString().length)
-                        + ((minuend - intermediate) * 10 + list[counter - 1])
-            )
+    if (rhv > lhv && lhv / 10 > 0) {
+        writer.write("$lhv | $rhv")
+        writer.newLine()
+        writer.write(multiplication(" ", lhv.toString().length - 2) + "-0   0")
+        writer.newLine()
+        writer.write(multiplication("-", lhv.toString().length))
+        writer.newLine()
+        writer.write(multiplication(" ", lhv.toString().length - 1) + lhv.toString())
+    } else {
+        var number = lhv
+        while (number > 0) {
+            list.add(0, number % 10)
+            number /= 10
         }
+        var counter: Int
+        var spaces = ""
+        writer.write(" $lhv | $rhv")
         writer.newLine()
-        counter += 1
-        minuend = (minuend - intermediate) * 10 + list[counter - 2]
-        intermediate = minuend / rhv * rhv
-        spaces = multiplication(" ", counter - 1 - intermediate.toString().length)
-        writer.write("$spaces-$intermediate")
+        var intermediate = lhv
+        while (intermediate / 10 > rhv) {
+            intermediate /= 10
+        }
+        intermediate = intermediate / rhv * rhv
+        writer.write("-$intermediate")
+        val resultSpace = lhv.toString().length - intermediate.toString().length + 3
+        writer.write(multiplication(" ", resultSpace) + (lhv / rhv).toString())
         writer.newLine()
-        writer.write(spaces + multiplication("-", counter - spaces.length))
+        counter = intermediate.toString().length + 1
+        writer.write(multiplication("-", counter - spaces.length))
         writer.newLine()
+        var minuend = list.subList(0, intermediate.toString().length).joinToString(separator = "").toInt()
+        while (counter < list.size + 1) {
+            if (minuend == intermediate) {
+                writer.write(
+                    multiplication(" ", counter - (minuend - intermediate).toString().length)
+                            + "0" + list[counter - 1]
+                )
+            } else {
+                writer.write(
+                    multiplication(" ", counter - (minuend - intermediate).toString().length)
+                            + ((minuend - intermediate) * 10 + list[counter - 1])
+                )
+            }
+            writer.newLine()
+            counter += 1
+            minuend = (minuend - intermediate) * 10 + list[counter - 2]
+            intermediate = minuend / rhv * rhv
+            spaces = multiplication(" ", counter - 1 - intermediate.toString().length)
+            writer.write("$spaces-$intermediate")
+            writer.newLine()
+            writer.write(spaces + multiplication("-", counter - spaces.length))
+            writer.newLine()
+        }
+        writer.write(
+            multiplication(" ", counter - (minuend - intermediate).toString().length)
+                    + (minuend - intermediate)
+        )
     }
-    writer.write(
-        multiplication(" ", counter - (minuend - intermediate).toString().length)
-                + (minuend - intermediate)
-    )
     writer.close()
 }
 
