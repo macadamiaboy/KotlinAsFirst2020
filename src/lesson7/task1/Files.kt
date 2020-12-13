@@ -75,7 +75,36 @@ fun deleteMarked(inputName: String, outputName: String) {
  * Регистр букв игнорировать, то есть буквы е и Е считать одинаковыми.
  *
  */
-fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int?> = TODO()
+fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int?> {
+    val map = mutableMapOf<String, Int>()
+    for (string in substrings) {
+        map[string] = 0
+    }
+    var startingIndex = 0
+    var counter = 0
+    for ((substring, _) in map) {
+        val string = if (substring in """[.\$^[]]""") "\\" + substring else substring
+        var separator =
+            Regex(string.toLowerCase()).find(
+                File(inputName).readLines().toString().toLowerCase(),
+                startingIndex
+            )?.range?.start
+        while (separator != null) {
+            counter++
+            startingIndex = separator + 1
+            separator =
+                Regex(string.toLowerCase()).find(
+                    File(inputName).readLines().toString().toLowerCase(),
+                    startingIndex
+                )?.range?.start
+        }
+        map[substring] = counter
+        counter = 0
+        startingIndex = 0
+    }
+    return map
+}
+
 
 /**
  * Средняя (12 баллов)
@@ -314,35 +343,35 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
             writer.write("<p>")
             writer.newLine()
         }
-        while ("**" in variableLine) {
-            val firstSymbolIndex = Regex("""\*\*""").find(variableLine)!!.range.first
-            val secondSymbolIndex =
-                firstSymbolIndex + 2 + Regex("""\*\*""").find(variableLine.substring(firstSymbolIndex + 2))!!.range.first
-            variableLine =
-                variableLine.substring(0, firstSymbolIndex) + "<b>" + variableLine.substring(
-                    firstSymbolIndex + 2,
-                    secondSymbolIndex
-                ) + "</b>" + variableLine.substring(secondSymbolIndex + 2)
-        }
-        while ("~~" in variableLine) {
-            val firstSymbolIndex = Regex("""~~""").find(variableLine)!!.range.first
-            val secondSymbolIndex =
-                firstSymbolIndex + 2 + Regex("""~~""").find(variableLine.substring(firstSymbolIndex + 2))!!.range.first
-            variableLine =
-                variableLine.substring(0, firstSymbolIndex) + "<s>" + variableLine.substring(
-                    firstSymbolIndex + 2,
-                    secondSymbolIndex
-                ) + "</s>" + variableLine.substring(secondSymbolIndex + 2)
-        }
-        while ("*" in variableLine) {
-            val firstSymbolIndex = Regex("""\*""").find(variableLine)!!.range.first
-            val secondSymbolIndex =
-                firstSymbolIndex + 1 + Regex("""\*""").find(variableLine.substring(firstSymbolIndex + 1))!!.range.first
-            variableLine =
-                variableLine.substring(0, firstSymbolIndex) + "<i>" + variableLine.substring(
-                    firstSymbolIndex + 1,
-                    secondSymbolIndex
-                ) + "</i>" + variableLine.substring(secondSymbolIndex + 1)
+        while ("**" in variableLine || "~~" in variableLine || "*" in variableLine) {
+            if ("**" in variableLine) {
+                val firstSymbolIndex = Regex("""\*\*""").find(variableLine)!!.range.first
+                val secondSymbolIndex =
+                    firstSymbolIndex + 2 + Regex("""\*\*""").find(variableLine.substring(firstSymbolIndex + 2))!!.range.first
+                variableLine =
+                    variableLine.substring(0, firstSymbolIndex) + "<b>" + variableLine.substring(
+                        firstSymbolIndex + 2,
+                        secondSymbolIndex
+                    ) + "</b>" + variableLine.substring(secondSymbolIndex + 2)
+            } else if ("~~" in variableLine) {
+                val firstSymbolIndex = Regex("""~~""").find(variableLine)!!.range.first
+                val secondSymbolIndex =
+                    firstSymbolIndex + 2 + Regex("""~~""").find(variableLine.substring(firstSymbolIndex + 2))!!.range.first
+                variableLine =
+                    variableLine.substring(0, firstSymbolIndex) + "<s>" + variableLine.substring(
+                        firstSymbolIndex + 2,
+                        secondSymbolIndex
+                    ) + "</s>" + variableLine.substring(secondSymbolIndex + 2)
+            } else if ("*" in variableLine) {
+                val firstSymbolIndex = Regex("""\*""").find(variableLine)!!.range.first
+                val secondSymbolIndex =
+                    firstSymbolIndex + 1 + Regex("""\*""").find(variableLine.substring(firstSymbolIndex + 1))!!.range.first
+                variableLine =
+                    variableLine.substring(0, firstSymbolIndex) + "<i>" + variableLine.substring(
+                        firstSymbolIndex + 1,
+                        secondSymbolIndex
+                    ) + "</i>" + variableLine.substring(secondSymbolIndex + 1)
+            }
         }
         writer.write(variableLine)
         writer.newLine()
