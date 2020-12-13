@@ -524,19 +524,38 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     val list = mutableListOf<Int>()
     if (lhv / rhv / 10 == 0 && lhv / 10 > 0) {
         val integer = lhv / rhv
-        if ((integer * rhv).toString().length < lhv.toString().length) writer.write("$lhv | $rhv")
-        else writer.write(" $lhv | $rhv")
-        writer.newLine()
-        writer.write(
-            multiplication(
-                " ",
-                lhv.toString().length - integer * rhv.toString().length
-            ) + "-" + integer * rhv + "   " + integer
-        )
-        writer.newLine()
-        writer.write(multiplication("-", lhv.toString().length))
-        writer.newLine()
-        writer.write((lhv - integer * rhv).toString())
+        if ((integer * rhv).toString().length < lhv.toString().length) {
+            writer.write("$lhv | $rhv")
+            writer.newLine()
+            writer.write(
+                multiplication(
+                    " ",
+                    lhv.toString().length - (integer * rhv).toString().length - 1
+                ) + "-" + integer * rhv + "   " + integer
+            )
+            writer.newLine()
+            writer.write(multiplication("-", lhv.toString().length))
+            writer.newLine()
+            writer.write(
+                multiplication(
+                    " ",
+                    lhv.toString().length - (lhv - integer * rhv).toString().length
+                ) + (lhv - integer * rhv).toString()
+            )
+        } else {
+            writer.write(" $lhv | $rhv")
+            writer.newLine()
+            writer.write("-" + integer * rhv + "   " + integer)
+            writer.newLine()
+            writer.write(multiplication("-", lhv.toString().length + 1))
+            writer.newLine()
+            writer.write(
+                multiplication(
+                    " ",
+                    lhv.toString().length - (lhv - integer * rhv).toString().length
+                ) + (lhv - integer * rhv).toString()
+            )
+        }
     } else {
         var number = lhv
         while (number > 0) {
