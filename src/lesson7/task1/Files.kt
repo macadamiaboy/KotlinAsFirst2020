@@ -587,7 +587,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
             writer.write(
                 multiplication(
                     " ",
-                    lhv.toString().length - (lhv - integer * rhv).toString().length
+                    lhv.toString().length - (lhv - integer * rhv).toString().length + 1
                 ) + (lhv - integer * rhv).toString()
             )
         }
