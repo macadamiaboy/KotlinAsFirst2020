@@ -523,9 +523,10 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     val writer = File(outputName).bufferedWriter()
     val list = mutableListOf<Int>()
     if (lhv / rhv / 10 == 0 && lhv / 10 > 0) {
-        writer.write("$lhv | $rhv")
-        writer.newLine()
         val integer = lhv / rhv
+        if ((integer * rhv).toString().length < lhv.toString().length) writer.write("$lhv | $rhv")
+        else writer.write(" $lhv | $rhv")
+        writer.newLine()
         writer.write(
             multiplication(
                 " ",
@@ -544,13 +545,13 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         }
         var counter: Int
         var spaces = ""
-        writer.write(" $lhv | $rhv")
-        writer.newLine()
         var intermediate = lhv
         while (intermediate / 10 >= rhv) {
             intermediate /= 10
         }
         intermediate = intermediate / rhv * rhv
+        writer.write(" $lhv | $rhv")
+        writer.newLine()
         writer.write("-$intermediate")
         val resultSpace = lhv.toString().length - intermediate.toString().length + 3
         writer.write(multiplication(" ", resultSpace) + (lhv / rhv).toString())
