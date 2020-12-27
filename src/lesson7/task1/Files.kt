@@ -631,7 +631,6 @@ fun pathfinder(table: Array<Array<Char>>, x: Int, y: Int): String {
             }
             table[positionX][positionY + 1] == '^' -> {
                 path += "d"
-                println(path)
                 return path
             }
             table[positionX - 1][positionY] == '^' -> {
@@ -838,7 +837,6 @@ fun robot(inputName: String): String {
                     positionX = fork.first
                     positionY = fork.second
                 } else {
-                    println(path + additionalPath)
                     return path + additionalPath
                 }
             }
@@ -879,4 +877,3 @@ fun robot(inputName: String): String {
     }
     return path
 }
-
