@@ -1,9 +1,12 @@
 package lesson7.task1
 
+import lesson6.task1.plusMinus
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import java.io.File
+import java.lang.IllegalArgumentException
 
 class Tests {
 
@@ -441,4 +444,22 @@ Basic, Ruby, Swift.
 
         File("temp.txt").delete()
     }
+
+    @Test
+    fun robot() {
+        assertEquals(
+            "ddrruurrdrrur", robot("input/robot_1.txt")
+        )
+        assertEquals(
+            "rrddd", robot("input/robot_3.txt")
+        )
+        assertEquals(
+            "lldlluururrrrrrrddlld", robot("input/robot_2.txt")
+        )
+        assertEquals(
+            "uuurrdddrrrrrrrrruurrurrddd", robot("input/robot_4.txt")
+        )
+        Assertions.assertThrows(IllegalArgumentException::class.java) { robot("input/robot_5.txt") }
+    }
 }
+

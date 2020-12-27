@@ -3,6 +3,7 @@
 package lesson7.task1
 
 import java.io.File
+import java.lang.IllegalArgumentException
 
 // Урок 7: работа с файлами
 // Урок интегральный, поэтому его задачи имеют сильно увеличенную стоимость
@@ -613,5 +614,269 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         )
     }
     writer.close()
+}
+
+fun pathfinder(table: Array<Array<Char>>, x: Int, y: Int): String {
+    var path = ""
+    var positionX = x
+    var positionY = y
+    val turns = mutableSetOf<Char>()
+    while (table[positionX + 1][positionY] == '.' || table[positionX][positionY + 1] == '.' ||
+        table[positionX - 1][positionY] == '.' || table[positionX][positionY - 1] == '.'
+    ) {
+        when {
+            table[positionX + 1][positionY] == '^' -> {
+                path += "r"
+                return path
+            }
+            table[positionX][positionY + 1] == '^' -> {
+                path += "d"
+                println(path)
+                return path
+            }
+            table[positionX - 1][positionY] == '^' -> {
+                path += "l"
+                return path
+            }
+            table[positionX][positionY - 1] == '^' -> {
+                path += "u"
+                return path
+            }
+        }
+        val set = mutableSetOf<Char>()
+        if (table[positionX + 1][positionY] == '.') {
+            set += 'r'
+        }
+        if (table[positionX][positionY + 1] == '.') {
+            set += 'd'
+        }
+        if (table[positionX - 1][positionY] == '.') {
+            set += 'l'
+        }
+        if (table[positionX][positionY - 1] == '.') {
+            set += 'u'
+        }
+        if (set.size == 1) {
+            when {
+                'r' in set -> {
+                    path += "r"
+                    table[positionX][positionY] = '#'
+                    positionX += 1
+                }
+                'd' in set -> {
+                    path += "d"
+                    table[positionX][positionY] = '#'
+                    positionY += 1
+                }
+                'l' in set -> {
+                    path += "l"
+                    table[positionX][positionY] = '#'
+                    positionX -= 1
+                }
+                'u' in set -> {
+                    path += "u"
+                    table[positionX][positionY] = '#'
+                    positionY -= 1
+                }
+            }
+        } else {
+            val fork = positionX to positionY
+            table[positionX][positionY] = '#'
+            var additionalPath: String
+            if ('r' in set) {
+                if ('r' in turns) {
+                    return ""
+                }
+                additionalPath = "r"
+                positionX += 1
+                additionalPath += pathfinder(table, positionX, positionY)
+                if (additionalPath.length == 1) {
+                    positionX = fork.first
+                    positionY = fork.second
+                    turns += 'r'
+                } else return path + additionalPath
+            }
+            if ('d' in set) {
+                if ('d' in turns) {
+                    return ""
+                }
+                additionalPath = "d"
+                positionY += 1
+                additionalPath += pathfinder(table, positionX, positionY)
+                if (additionalPath.length == 1) {
+                    positionX = fork.first
+                    positionY = fork.second
+                    turns += 'd'
+                } else return path + additionalPath
+            }
+            if ('l' in set) {
+                if ('l' in turns) {
+                    return ""
+                }
+                additionalPath = "l"
+                positionX -= 1
+                additionalPath += pathfinder(table, positionX, positionY)
+                if (additionalPath.length == 1) {
+                    positionX = fork.first
+                    positionY = fork.second
+                    turns += 'l'
+                } else return path + additionalPath
+            }
+            if ('u' in set) {
+                if ('u' in turns) {
+                    return ""
+                }
+                additionalPath = "u"
+                positionY -= 1
+                additionalPath += pathfinder(table, positionX, positionY)
+                if (additionalPath.length == 1) {
+                    positionX = fork.first
+                    positionY = fork.second
+                    turns += 'u'
+                } else return path + additionalPath
+            }
+        }
+    }
+    when {
+        table[positionX + 1][positionY] == '^' -> {
+            path += "r"
+            return path
+        }
+        table[positionX][positionY + 1] == '^' -> {
+            path += "d"
+            return path
+        }
+        table[positionX - 1][positionY] == '^' -> {
+            path += "l"
+            return path
+        }
+        table[positionX][positionY - 1] == '^' -> {
+            path += "u"
+            return path
+        }
+        else -> return ""
+    }
+}
+
+fun robot(inputName: String): String {
+    var positionX = 0
+    var positionY = 0
+    val table: Array<Array<Char>> =
+        Array(File(inputName).readLines()[1].length + 2) { Array(File(inputName).readLines().size + 2) { ' ' } }
+    var counterOx = 1
+    var counterOy = 1
+    var path = ""
+    for (line in File(inputName).readLines()) {
+        for (symbol in line) {
+            table[counterOx][counterOy] = symbol
+            counterOx++
+        }
+        if ('*' in line) {
+            positionX = Regex("""\*""").find(line)!!.range.first + 1
+            positionY = counterOy
+        }
+        counterOy++
+        counterOx = 1
+    }
+    while (table[positionX + 1][positionY] == '.' || table[positionX][positionY + 1] == '.' ||
+        table[positionX - 1][positionY] == '.' || table[positionX][positionY - 1] == '.'
+    ) {
+        val set = mutableSetOf<Char>()
+        if (table[positionX + 1][positionY] == '.') {
+            set += 'r'
+        }
+        if (table[positionX][positionY + 1] == '.') {
+            set += 'd'
+        }
+        if (table[positionX - 1][positionY] == '.') {
+            set += 'l'
+        }
+        if (table[positionX][positionY - 1] == '.') {
+            set += 'u'
+        }
+        if (set.size == 1) {
+            when {
+                'r' in set -> {
+                    path += "r"
+                    table[positionX][positionY] = '#'
+                    positionX += 1
+                }
+                'd' in set -> {
+                    path += "d"
+                    table[positionX][positionY] = '#'
+                    positionY += 1
+                }
+                'l' in set -> {
+                    path += "l"
+                    table[positionX][positionY] = '#'
+                    positionX -= 1
+                }
+                'u' in set -> {
+                    path += "u"
+                    table[positionX][positionY] = '#'
+                    positionY -= 1
+                }
+            }
+        } else {
+            val fork = positionX to positionY
+            table[positionX][positionY] = '#'
+            var additionalPath: String
+            if ('r' in set) {
+                additionalPath = "r"
+                positionX += 1
+                additionalPath += pathfinder(table, positionX, positionY)
+                if (additionalPath.length == 1) {
+                    positionX = fork.first
+                    positionY = fork.second
+                } else return path + additionalPath
+            }
+            if ('d' in set) {
+                additionalPath = "d"
+                positionY += 1
+                additionalPath += pathfinder(table, positionX, positionY)
+                if (additionalPath.length == 1) {
+                    positionX = fork.first
+                    positionY = fork.second
+                } else {
+                    println(path + additionalPath)
+                    return path + additionalPath
+                }
+            }
+            if ('l' in set) {
+                additionalPath = "l"
+                positionX -= 1
+                additionalPath += pathfinder(table, positionX, positionY)
+                if (additionalPath.length == 1) {
+                    positionX = fork.first
+                    positionY = fork.second
+                } else return path + additionalPath
+            }
+            if ('u' in set) {
+                additionalPath = "u"
+                positionY -= 1
+                additionalPath += pathfinder(table, positionX, positionY)
+                if (additionalPath.length == 1) {
+                    positionX = fork.first
+                    positionY = fork.second
+                } else return path + additionalPath
+            }
+        }
+    }
+    path += when {
+        table[positionX + 1][positionY] == '^' -> {
+            "r"
+        }
+        table[positionX][positionY + 1] == '^' -> {
+            "d"
+        }
+        table[positionX - 1][positionY] == '^' -> {
+            "l"
+        }
+        table[positionX][positionY - 1] == '^' -> {
+            "u"
+        }
+        else -> throw IllegalArgumentException()
+    }
+    return path
 }
 
