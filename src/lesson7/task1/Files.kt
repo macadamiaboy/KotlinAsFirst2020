@@ -764,7 +764,6 @@ fun robot(inputName: String): String {
         Array(File(inputName).readLines()[1].length + 2) { Array(File(inputName).readLines().size + 2) { ' ' } }
     var counterOx = 1
     var counterOy = 1
-    var path = ""
     for (line in File(inputName).readLines()) {
         for (symbol in line) {
             table[counterOx][counterOy] = symbol
@@ -777,103 +776,6 @@ fun robot(inputName: String): String {
         counterOy++
         counterOx = 1
     }
-    while (table[positionX + 1][positionY] == '.' || table[positionX][positionY + 1] == '.' ||
-        table[positionX - 1][positionY] == '.' || table[positionX][positionY - 1] == '.'
-    ) {
-        val set = mutableSetOf<Char>()
-        if (table[positionX + 1][positionY] == '.') {
-            set += 'r'
-        }
-        if (table[positionX][positionY + 1] == '.') {
-            set += 'd'
-        }
-        if (table[positionX - 1][positionY] == '.') {
-            set += 'l'
-        }
-        if (table[positionX][positionY - 1] == '.') {
-            set += 'u'
-        }
-        if (set.size == 1) {
-            when {
-                'r' in set -> {
-                    path += "r"
-                    table[positionX][positionY] = '#'
-                    positionX += 1
-                }
-                'd' in set -> {
-                    path += "d"
-                    table[positionX][positionY] = '#'
-                    positionY += 1
-                }
-                'l' in set -> {
-                    path += "l"
-                    table[positionX][positionY] = '#'
-                    positionX -= 1
-                }
-                'u' in set -> {
-                    path += "u"
-                    table[positionX][positionY] = '#'
-                    positionY -= 1
-                }
-            }
-        } else {
-            val fork = positionX to positionY
-            table[positionX][positionY] = '#'
-            var additionalPath: String
-            if ('r' in set) {
-                additionalPath = "r"
-                positionX += 1
-                additionalPath += pathfinder(table, positionX, positionY)
-                if (additionalPath.length == 1) {
-                    positionX = fork.first
-                    positionY = fork.second
-                } else return path + additionalPath
-            }
-            if ('d' in set) {
-                additionalPath = "d"
-                positionY += 1
-                additionalPath += pathfinder(table, positionX, positionY)
-                if (additionalPath.length == 1) {
-                    positionX = fork.first
-                    positionY = fork.second
-                } else {
-                    return path + additionalPath
-                }
-            }
-            if ('l' in set) {
-                additionalPath = "l"
-                positionX -= 1
-                additionalPath += pathfinder(table, positionX, positionY)
-                if (additionalPath.length == 1) {
-                    positionX = fork.first
-                    positionY = fork.second
-                } else return path + additionalPath
-            }
-            if ('u' in set) {
-                additionalPath = "u"
-                positionY -= 1
-                additionalPath += pathfinder(table, positionX, positionY)
-                if (additionalPath.length == 1) {
-                    positionX = fork.first
-                    positionY = fork.second
-                } else return path + additionalPath
-            }
-        }
-    }
-    path += when {
-        table[positionX + 1][positionY] == '^' -> {
-            "r"
-        }
-        table[positionX][positionY + 1] == '^' -> {
-            "d"
-        }
-        table[positionX - 1][positionY] == '^' -> {
-            "l"
-        }
-        table[positionX][positionY - 1] == '^' -> {
-            "u"
-        }
-        else -> throw IllegalArgumentException()
-    }
-    return path
+    val path = pathfinder(table, positionX, positionY)
+    if (path.isEmpty()) throw IllegalArgumentException() else return path
 }

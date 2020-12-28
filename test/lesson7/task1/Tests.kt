@@ -1,6 +1,5 @@
 package lesson7.task1
 
-import lesson6.task1.plusMinus
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Tag
@@ -451,15 +450,24 @@ Basic, Ruby, Swift.
             "ddrruurrdrrur", robot("input/robot_1.txt")
         )
         assertEquals(
-            "rrddd", robot("input/robot_3.txt")
+            "lldlluururrrrrrrddlld", robot("input/robot_2.txt")
         )
         assertEquals(
-            "lldlluururrrrrrrddlld", robot("input/robot_2.txt")
+            "rrddd", robot("input/robot_3.txt")
         )
         assertEquals(
             "uuurrdddrrrrrrrrruurrurrddd", robot("input/robot_4.txt")
         )
         Assertions.assertThrows(IllegalArgumentException::class.java) { robot("input/robot_5.txt") }
+        assertEquals(
+            "rrrrrd", robot("input/robot_6.txt")
+        )
+        assertEquals(
+            "rrdddllllllllllurru", robot("input/robot_7.txt")
+        )
+        assertEquals(
+            "rrrddrru", robot("input/robot_8.txt")
+        )
     }
 }
 
