@@ -16,37 +16,93 @@ package lesson12.task1
  * В конструктор хеш-таблицы передаётся её вместимость (максимальное количество элементов)
  */
 class OpenHashSet<T>(val capacity: Int) {
-
     /**
      * Массив для хранения элементов хеш-таблицы
      */
-    internal val elements = Array<Any?>(capacity) { null }
+    val elements = Array<Any?>(capacity) { null }
 
     /**
      * Число элементов в хеш-таблице
      */
-    val size: Int get() = TODO()
+    val size: Int
+        get() {
+            var result = 0
+            for (element in elements) {
+                if (element !== null) result++
+            }
+            return result
+        }
 
     /**
      * Признак пустоты
      */
-    fun isEmpty(): Boolean = TODO()
+    fun isEmpty(): Boolean {
+        for (element in elements) {
+            if (element !== null) return false
+        }
+        return true
+    }
 
     /**
      * Добавление элемента.
      * Вернуть true, если элемент был успешно добавлен,
      * или false, если такой элемент уже был в таблице, или превышена вместимость таблицы.
      */
-    fun add(element: T): Boolean = TODO()
+    fun add(element: T): Boolean {
+        val code = element.hashCode() % capacity
+        if (elements[code] == element) return false
+        if (elements[code] == null) {
+            elements[code] = element
+            return true
+        } else {
+            for (i in 1 until capacity) {
+                if (elements[code] == element) return false
+                if (elements[code] == null) {
+                    elements[code] = element
+                    return true
+                }
+            }
+        }
+        return false
+    }
 
     /**
      * Проверка, входит ли заданный элемент в хеш-таблицу
      */
-    operator fun contains(element: T): Boolean = TODO()
+    operator fun contains(element: T): Boolean {
+        val code = element.hashCode() % capacity
+        if (elements[code] == element) return true
+        else {
+            for (i in 1 until capacity) {
+                if (elements[code] == element) return true
+                if (elements[code] == null) {
+                    return false
+                }
+            }
+        }
+        return false
+    }
+
+    private fun accordanceOfHashSet(hashSet: OpenHashSet<T>, anotherHashSet: OpenHashSet<*>): Boolean {
+        for (i in 0 until hashSet.capacity) {
+            if (hashSet.elements[i] !== anotherHashSet.elements[i]) return false
+        }
+        return true
+    }
 
     /**
      * Таблицы равны, если в них одинаковое количество элементов,
      * и любой элемент из второй таблицы входит также и в первую
      */
-    override fun equals(other: Any?): Boolean = TODO()
+    override fun equals(other: Any?): Boolean =
+        other is OpenHashSet<*> && this.size == other.size && this.hashCode() == other.hashCode()
+
+    override fun hashCode(): Int {
+        var result = 0
+        for (i in 0 until capacity) {
+            if (elements[i] !== null) result *= elements[i].hashCode()
+        }
+        result *= size
+        return result
+    }
 }
