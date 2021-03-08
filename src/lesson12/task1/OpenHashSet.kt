@@ -19,7 +19,7 @@ class OpenHashSet<T>(val capacity: Int) {
     /**
      * Массив для хранения элементов хеш-таблицы
      */
-    val elements = Array<Any?>(capacity) { null }
+    var elements = Array<Any?>(capacity) { null }
 
     /**
      * Число элементов в хеш-таблице
@@ -50,17 +50,25 @@ class OpenHashSet<T>(val capacity: Int) {
      */
     fun add(element: T): Boolean {
         val code = element.hashCode() % capacity
-        if (elements[code] == element) return false
+        if (elements[code] == element) {
+            return false
+        }
         if (elements[code] == null) {
             elements[code] = element
             return true
         } else {
-            for (i in 1 until capacity) {
-                if (elements[code] == element) return false
-                if (elements[code] == null) {
-                    elements[code] = element
+            var i = code + 1
+            var counter = i % capacity
+            while (counter != code) {
+                if (elements[counter] == element) {
+                    return false
+                }
+                if (elements[counter] == null) {
+                    elements[counter] = element
                     return true
                 }
+                i++
+                counter = i % capacity
             }
         }
         return false
@@ -84,8 +92,14 @@ class OpenHashSet<T>(val capacity: Int) {
     }
 
     private fun accordanceOfHashSet(hashSet: OpenHashSet<T>, anotherHashSet: OpenHashSet<*>): Boolean {
+        val controlHashSet = OpenHashSet<Any?>(hashSet.capacity + anotherHashSet.capacity)
+        for (i in 0 until anotherHashSet.capacity) {
+            if (anotherHashSet.elements[i] != null) controlHashSet.add(anotherHashSet.elements[i])
+        }
         for (i in 0 until hashSet.capacity) {
-            if (hashSet.elements[i] !== anotherHashSet.elements[i]) return false
+            if (hashSet.elements[i] != null) {
+                if (controlHashSet.add(hashSet.elements[i])) return false
+            }
         }
         return true
     }
@@ -95,14 +109,15 @@ class OpenHashSet<T>(val capacity: Int) {
      * и любой элемент из второй таблицы входит также и в первую
      */
     override fun equals(other: Any?): Boolean =
-        other is OpenHashSet<*> && this.size == other.size && this.hashCode() == other.hashCode()
+        other is OpenHashSet<*> && this.size == other.size && accordanceOfHashSet(this, other)
 
     override fun hashCode(): Int {
-        var result = 0
+        var result = 283
         for (i in 0 until capacity) {
-            if (elements[i] !== null) result *= elements[i].hashCode()
+            if (elements[i] != null) {
+                result += elements[i].hashCode()
+            }
         }
-        result *= size
         return result
     }
 }
